@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group( function() {
     Route::resource('developer', App\Http\Controllers\DeveloperController::class);
     Route::resource('project', App\Http\Controllers\ProjectController::class);
     Route::resource('estate', App\Http\Controllers\EstateController::class);
+    Route::resource('seller', App\Http\Controllers\SellerController::class);
 
     Route::get('/get_district_by_name', [App\Http\Controllers\DistrictController::class,'getDistrictByName'])->name('getDistrictByName');
 });

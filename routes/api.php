@@ -19,8 +19,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-// Route::middleware(['auth:sanctum'])->group( function() {
-    // Route::get('/get_district_by_name', [App\Http\Controllers\DistrictController::class, 'getDistrictByName'])->name('getDistrictByName');
-    // Route::get('/get_district_by_zipcode', [App\Http\Controllers\DistrictController::class, 'getDistrictByZipcode'])->name('getDistrictByZipcode');
-    
-// });

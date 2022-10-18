@@ -12,8 +12,7 @@ class Developer extends Model
     protected $fillable = [
         'brand_id',
         'name',
-        'note',
-        'is_active',
+        'des',
     ];
 
     public function brand()

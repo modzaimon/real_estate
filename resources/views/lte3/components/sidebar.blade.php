@@ -48,6 +48,12 @@
                         <p>Estate</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('seller.index') }}" class="nav-link">
+                        <i class="fa-solid fa-house col-2"></i>
+                        <p>Seller</p>
+                    </a>
+                </li>
                 
             </ul>
         </nav>
