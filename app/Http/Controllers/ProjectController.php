@@ -16,7 +16,7 @@ class ProjectController extends Controller
         $data = Project::with(['developer'=>function($query){
             $query->with('brand');
         }])->paginate(20);
-        return view('project.index',compact('data'));
+        return view('module.project.index',compact('data'));
     }
 
 
@@ -24,7 +24,7 @@ class ProjectController extends Controller
     {
         $data['brand'] = Developer::select('id','name','brand_id')->with('brand')->get();
         $data['project_type'] = ProjectType::all();
-        return view('project.create',compact('data'));
+        return view('module.project.create',compact('data'));
     }
 
    
@@ -32,7 +32,7 @@ class ProjectController extends Controller
     {
         try{
             $this->validate($request,[
-                'name'          =>'required|min:3|unique:projects',
+                'name'          =>'required|min:3|unique:projects | max:100',
                 'type'          =>'required',
                 'district_id'   =>'required',
             ]);
@@ -75,7 +75,7 @@ class ProjectController extends Controller
         ->where('id',$project->id)->first();
 
         // return response()->json($data);
-        return view('project.view',compact('data'));
+        return view('module.project.view',compact('data'));
     }
 
     
@@ -88,7 +88,7 @@ class ProjectController extends Controller
                 $query->with('province');
             }]);
         }])->first();
-        return view('project.edit',compact('data'));
+        return view('module.project.edit',compact('data'));
     }
 
 
@@ -96,7 +96,7 @@ class ProjectController extends Controller
     {
         try{
             $this->validate($request,[
-                'name'          =>'required|min:3|unique:projects,name,'.$project->id,
+                'name'          =>'required|min:3| max:100|unique:projects,name,'.$project->id,
                 'type'          =>'required',
                 'district_id'   =>'required',
             ]);

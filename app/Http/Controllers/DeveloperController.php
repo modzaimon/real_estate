@@ -13,14 +13,14 @@ class DeveloperController extends Controller
     {
 
         $data = Developer::with('brand')->paginate(20);
-        return view('developer.index',compact('data'));
+        return view('module.developer.index',compact('data'));
 
     }
 
     public function create()
     {
         $data = Brand::all();
-        return view('developer.create',compact('data'));
+        return view('module.developer.create',compact('data'));
     }
 
 
@@ -29,8 +29,7 @@ class DeveloperController extends Controller
         try{
             $this->validate($request,[
                 'brand_id'      =>'required',
-                'name'          =>'required|min:3|max:255|unique:developers',
-                'des'           =>'max:255',
+                'name'          =>'required|min:3|max:100|unique:developers'
             ]);
 
             Developer::create([
@@ -46,14 +45,14 @@ class DeveloperController extends Controller
 
     public function show(Developer $developer)
     {
-        return view('developer.view')->with('data',$developer);
+        return view('module.developer.view')->with('data',$developer);
         
     }
 
     public function edit(Developer $developer)
     {   
         $brand = Brand::all();
-        return view('developer.edit')->with('data',$developer)->with('brand',$brand);
+        return view('module.developer.edit')->with('data',$developer)->with('brand',$brand);
         
     }
 
@@ -62,8 +61,7 @@ class DeveloperController extends Controller
         try{
             $this->validate($request,[
                 'brand_id'      =>'required',
-                'name'          =>'required|min:3|max:255|unique:developers,name,'.$developer->id,
-                'des'           =>'max:255',
+                'name'          =>'required|min:3|max:100|unique:developers,name,'.$developer->id
             ]);
 
             $developer->update([

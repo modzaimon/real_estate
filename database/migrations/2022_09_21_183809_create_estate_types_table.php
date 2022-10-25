@@ -16,7 +16,7 @@ class CreateEstateTypesTable extends Migration
         Schema::create('estate_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('des')->nullable();
+            $table->text('des')->nullable();
             $table->timestamps();
         });
     }

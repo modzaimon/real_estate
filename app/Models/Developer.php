@@ -19,5 +19,8 @@ class Developer extends Model
     {
         return $this->belongsTo(Brand::class,'brand_id');
     }
-    
+    public function estate()
+    {
+        return $this->hasManyThrough(Estate::class,Project::class);
+    }
 }

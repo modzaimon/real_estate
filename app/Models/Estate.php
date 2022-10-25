@@ -20,21 +20,20 @@ class Estate extends Model
         'des',
     ];
 
-    public function project_id()
-    {
-        return $this->hasOne(Project::class,'id','project_id');
-    }
+    
 
-    public function estate_type()
-    {
+    public function estate_type(){
         return $this->hasOne(EstateType::class,'id','type_id');
     }
-    public function project()
-    {
-        return $this->hasOne(Project::class,'id','project_id');
-    }
-    public function unit()
-    {
+
+    public function unit(){
         return $this->hasOne(Unit::class,'id','unit_id');
     }
+
+    public function project(){
+        return $this->belongsTo(Project::class);
+    }
+
+
+    
 }

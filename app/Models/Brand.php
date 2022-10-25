@@ -19,6 +19,7 @@ class Brand extends Model
         return $this->hasMany(developer::class,'brand_id');
     }
 
+    
 
 
     /* Example Relationship */

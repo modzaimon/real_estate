@@ -7,6 +7,7 @@ use App\Models\EstateType;
 use App\Models\Project;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EstateController extends Controller
 {
@@ -18,7 +19,7 @@ class EstateController extends Controller
         },'estate_type'])
         
         ->paginate(20);
-        return view('estate.index',compact('data'));
+        return view('module.estate.index',compact('data'));
     }
 
     public function create()
@@ -26,7 +27,7 @@ class EstateController extends Controller
         $data['estate_type'] = EstateType::all();
         $data['project'] = Project::all();
         $data['unit'] = Unit::all();
-        return view('estate.create',compact('data'));
+        return view('module.estate.create',compact('data'));
     }
 
     
@@ -34,7 +35,7 @@ class EstateController extends Controller
     {
         try{
             $this->validate($request,[
-                'number'    =>'required|min:3',
+                'number'    =>'required|min:3|max:20',
                 'price'     =>'required|numeric',
                 'size'     =>'numeric',
                 'type'      =>'required',
@@ -64,7 +65,7 @@ class EstateController extends Controller
     public function show(Estate $estate)
     {
         $data = $estate->with(['project','estate_type','unit'])->where('id',$estate->id)->first();   
-        return view('estate.view',compact('data'));
+        return view('module.estate.view',compact('data'));
     }
 
     
@@ -74,7 +75,7 @@ class EstateController extends Controller
         $data['project'] = Project::all();
         $data['unit'] = Unit::all();
         $data['estate'] = $estate->with(['project','estate_type','unit'])->where('id',$estate->id)->first();   
-        return view('estate.edit',compact('data'));
+        return view('module.estate.edit',compact('data'));
     }
 
     
@@ -82,7 +83,7 @@ class EstateController extends Controller
     {
         try{
             $this->validate($request,[
-                'number'    =>'required|min:3',
+                'number'    =>'required|min:3|max:20',
                 'price'     =>'required|numeric',
                 'size'     =>'numeric',
                 'type'      =>'required',
@@ -117,5 +118,35 @@ class EstateController extends Controller
         }
         return redirect()->route('estate.index')->with('Success','Estate is Deleted Successfully.');
 
+    }
+
+    public function getEstateByName(Request $request)
+    {
+        try{
+            // return response()->json(
+            //     Estate::select('id','number','project_id')
+            //         ->with(['project'=>function($query){
+            //             $query->with(['developer'=>function($query){
+            //                 $query->select('id','name','brand_id')->with(['brand'=>function($query){
+            //                     $query->select('id','name');
+            //                 }]);
+            //             }])->select('id','name','developer_id');
+            //         }])
+            //     ->get()
+            // );
+            return response()->json(
+                DB::table('estates as e')
+                    ->join('projects as p','e.project_id','=','p.id')
+                    ->join('developers as d','p.developer_id','=','d.id')
+                    ->join('brands as b','d.brand_id','=','b.id')
+                    ->where('e.number','LIKE','%'.$request->name.'%')
+                    ->orwhere('p.name','LIKE','%'.$request->name.'%')
+                    ->orwhere('b.name','LIKE','%'.$request->name.'%')
+                    ->get(['e.id','e.number','p.name as project_name','d.name as developer_name','b.id as brand_id','b.name as brand_name'])
+            );
+
+        }catch(Exception $e){
+            return response()->json($e->getMessage());
+        }
     }
 }

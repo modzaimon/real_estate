@@ -7,79 +7,79 @@ use Illuminate\Http\Request;
 
 class BankController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+        $data = Bank::paginate(20);
+        return view ('module.bank.index',compact('data',$data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function create()
     {
-        //
+        return view ('module.bank.create');
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request,[
+                "name"  =>  "required | max:100 | unique:banks"
+            ]);
+    
+            Bank::create([
+               "name"   =>  $request->name, 
+               "des"   =>  $request->des 
+            ]);
+            
+            return redirect()->route('bank.index')->with('success','Bank "'.$request->name.' is create successfully.');
+        } catch (Exception $e) {
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
+        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Bank  $bank
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function show(Bank $bank)
     {
-        //
+        return view('module.bank.view')->with('data',$bank);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Bank  $bank
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit(Bank $bank)
     {
-        //
+        return view('module.bank.edit')->with('data',$bank);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bank  $bank
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request, Bank $bank)
     {
-        //
+        try {
+
+            $this->validate($request,[
+                "name"  =>  "required | max:100 | unique:banks,".$bank->id
+            ]);
+
+            $bank->update([
+                "name"      =>  $request->name,
+                "des"       =>  $request->des
+            ]);    
+            return redirect()->route('bank.index')->with('success','Bank '.$request->name.' is Update Successfully.');
+        } catch (Exception $e) {
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Bank  $bank
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(Bank $bank)
     {
-        //
+        try{
+            $bank->delete();
+            return redirect()->route('bank.index')->with('success',"Bank ".$bank->name." is Deleted successfully.");
+        }catch(Exception $e){
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
     }
 }

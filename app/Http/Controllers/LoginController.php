@@ -14,7 +14,7 @@ class LoginController extends Controller
 
     public function todoLogin(Request $request){
         $this->validate($request,[
-            'username' => 'required',
+            'username' => 'required | max:100',
             'password' => 'required',
         ]);
 

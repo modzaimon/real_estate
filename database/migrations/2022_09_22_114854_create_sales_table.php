@@ -15,6 +15,17 @@ class CreateSalesTable extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
+            $table->integer('estate_id');
+            $table->integer('seller_id');
+            // $table->date('deposit_date');
+            // $table->date('contact_date');
+            // $table->integer('deposit');
+            // $table->integer('contact_payment');
+            // $table->integer('down_payment');
+            // $table->integer('discount');
+            $table->date('transfer_date')->nullable();
+            $table->text('des')->nullable();
+            
             $table->timestamps();
         });
     }

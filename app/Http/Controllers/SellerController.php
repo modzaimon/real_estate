@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
+use App\Models\BrandSeller;
 use App\Models\Seller;
 use App\Models\SellerType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SellerController extends Controller
 {
@@ -15,8 +18,8 @@ class SellerController extends Controller
      */
     public function index()
     {
-        $data = Seller::paginate(20);
-        return view('seller.index',compact('data',$data));
+        $data = Seller::with('brand','seller_type')->paginate(20);
+        return view('module.seller.index',compact('data',$data));
 
         
     }
@@ -28,8 +31,10 @@ class SellerController extends Controller
      */
     public function create()
     {
+        // print_r(json_encode(DB::table('brand_seller')->join('brands','brands.id','=','brand_seller.brand_id')->get()));
         $data['seller_type'] = SellerType::all();
-        return view('seller.create',compact('data',$data));
+        $data['brand'] = Brand::all();
+        return view('module.seller.create',compact('data',$data));
         
     }
 
@@ -44,17 +49,17 @@ class SellerController extends Controller
         // print_r($request->all());
         try {
             $this->validate($request,[
-                "name"  =>  "required | max:50 | unique:sellers",
+                "name"  =>  "required | max:100 | unique:sellers",
                 "tel"   =>  "required | numeric ",
-                "type"  =>  "required",
-                "des"   =>  "max:255"
+                "type"  =>  "required"
 
             ]);
 
-            Seller::create([
+            $seller = Seller::create([
                 "name"      => $request->name,
                 "tel"       => $request->tel,
                 "type_id"   => $request->type,
+                "brand_id"  =>  $request->brand,
                 "des"       => $request->des
             ]);
 
@@ -74,7 +79,7 @@ class SellerController extends Controller
     public function show(Seller $seller)
     {
         $data = Seller::where('id',$seller->id)->first();
-        return view('seller.view',compact('data',$data));
+        return view('module.seller.view',compact('data',$data));
     }
 
     /**
@@ -87,7 +92,8 @@ class SellerController extends Controller
     {
         $data['seller'] = $seller;
         $data['seller_type'] = SellerType::all();
-        return view('seller.edit',compact('data',$data));
+        $data['brand'] = Brand::all();
+        return view('module.seller.edit',compact('data',$data));
     }
 
     /**
@@ -102,16 +108,16 @@ class SellerController extends Controller
         
         try {
             $this->validate($request,[
-                "name"  =>  'required | max:50 | unique:sellers,name,'.$seller->id,
+                "name"  =>  'required | max:100 | unique:sellers,name,'.$seller->id,
                 "tel"   =>  "required | numeric",
-                "type"  =>  "required",
-                "des"   =>  "max:255",
+                "type"  =>  "required"
             ]);
 
             $seller->update([
                 "name"  =>  $request->name,
                 "tel"   =>  $request->tel,
                 "type_id"   =>  $request->type,
+                "brand_id"  =>  $request->brand,
                 "des"   =>  $request->des
             ]);
             return redirect()->route('seller.index')->with('success','Seller '.$request->name.' is Update Successfully.');

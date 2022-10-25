@@ -8,52 +8,35 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-       
+       @php
+           $menu = json_decode('[
+                { "name" : "Dashboard"  , "link" : "'.route('dashboard').'"         },
+                { "name" : "Sale"       , "link" : "'.route('sale.index').'"       },
+                { "name" : "Brand"      , "link" : "'.route('brand.index').'"       },
+                { "name" : "Developer"  , "link" : "'.route('developer.index').'"   },
+                { "name" : "Project"    , "link" : "'.route('project.index').'"     },
+                { "name" : "Estate"     , "link" : "'.route('estate.index').'"      },
+                { "name" : "Seller"     , "link" : "'.route('seller.index').'"      },
+                { "name" : "Customer"   , "link" : "'.route('customer.index').'"    },
+                { "name" : "Bank"       , "link" : "'.route('bank.index').'"        },
+                { "name" : "Directsale" , "link" : "'.route('directsale.index').'"  }
+            ]');
+       @endphp
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link ">
-                        <i class="fa-solid fa-gauge-high col-2"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+                <?php  ?>
 
-                
+                @foreach ($menu as $k => $v)
                 <li class="nav-item">
-                    <a href="{{ route('brand.index') }}" class="nav-link">
-                        <i class="fa-solid fa-flag col-2"></i>
-                        <p>Brand</p>
+                    <a href="{{$v->link}}" class="nav-link ">
+                        <i class="fa-solid fa-arrow-right col-2"></i>
+                        <p>{{$v->name}}</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('developer.index') }}" class="nav-link">
-                        <i class="fa-solid fa-building col-2"></i>
-                        <p>Developer </p>
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="{{ route('project.index') }}" class="nav-link">
-                        <i class="fa-solid fa-house-user col-2"></i>
-                        <p>Project</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('estate.index') }}" class="nav-link">
-                        <i class="fa-solid fa-house col-2"></i>
-                        <p>Estate</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('seller.index') }}" class="nav-link">
-                        <i class="fa-solid fa-house col-2"></i>
-                        <p>Seller</p>
-                    </a>
-                </li>
+                @endforeach
                 
             </ul>
         </nav>

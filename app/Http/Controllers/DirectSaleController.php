@@ -3,83 +3,96 @@
 namespace App\Http\Controllers;
 
 use App\Models\DirectSale;
+use App\Models\Bank;
 use Illuminate\Http\Request;
 
-class DirectSaleController extends Controller
+class DirectsaleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $data = Directsale::with('bank')->paginate(20);
+        return view('module.directsale.index',compact('data',$data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
-        //
+        $data['bank'] = Bank::all();
+        return view('module.directsale.create',compact('data',$data));
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        //
+        try {
+            $this->validate($request,[
+                "name"  =>  "required | max:100 | unique:direct_sales",
+                "tel"  =>  "required | max:10",
+                "bank"  =>  "required"
+
+            ]);
+    
+            Directsale::create([
+               "name"       =>  $request->name, 
+               "tel"        =>  $request->tel, 
+               "bank_id"    =>  $request->bank, 
+               "des"        =>  $request->des 
+            ]);
+            
+            return redirect()->route('directsale.index')->with('success','Directsale "'.$request->name.' is create successfully.');
+        } catch (Exception $e) {
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\DirectSale  $directSale
-     * @return \Illuminate\Http\Response
-     */
-    public function show(DirectSale $directSale)
+
+    public function show(Directsale $directsale)
     {
-        //
+        return view('module.directsale.view')->with('data',$directsale);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\DirectSale  $directSale
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(DirectSale $directSale)
+
+    public function edit(Directsale $directsale)
     {
-        //
+        $data['bank'] = Bank::all();
+        $data['directsale'] = $directsale;
+        return view('module.directsale.edit')->with('data',$data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\DirectSale  $directSale
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, DirectSale $directSale)
+
+    public function update(Request $request, Directsale $directsale)
     {
-        //
+        try {
+            $this->validate($request,[
+                "name"  =>  "required | max:100 | unique:direct_sales,name,".$directsale->id,
+                "tel"  =>  "required | max:10",
+                "bank"  =>  "required"
+
+            ]);
+    
+            $directsale->update([
+               "name"       =>  $request->name, 
+               "tel"        =>  $request->tel, 
+               "bank_id"    =>  $request->bank, 
+               "des"        =>  $request->des 
+            ]);
+            
+            return redirect()->route('directsale.index')->with('success','Directsale "'.$request->name.' is create successfully.');
+        } catch (Exception $e) {
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\DirectSale  $directSale
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(DirectSale $directSale)
+
+    public function destroy(Directsale $directsale)
     {
-        //
+        try{
+            $directsale->delete();
+            return redirect()->route('directsale.index')->with('Success','Directsale '.$directsale->name.' is Deleted Successfully.');
+        }catch(Exception $e){
+            return back()->withErrors('error',$e->getMessage())->withInput();
+        }
     }
 }

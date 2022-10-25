@@ -18,6 +18,7 @@ class CreateSellersTable extends Migration
             $table->string('name')->unique();
             $table->string('tel',10);
             $table->integer('type_id');
+            $table->integer('brand_id')->nullable();
             $table->text('des')->nullable();
             $table->timestamps();
         });

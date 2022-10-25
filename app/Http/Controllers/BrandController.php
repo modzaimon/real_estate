@@ -11,13 +11,13 @@ class BrandController extends Controller
     public function index()
     {
         $data = Brand::paginate(20);
-        return view('brand.index',compact('data'));
+        return view('module.brand.index',compact('data'));
     }
 
    
     public function create()
     {
-        return view('brand.create');
+        return view('module.brand.create');
         
     }
 
@@ -25,8 +25,7 @@ class BrandController extends Controller
     {
         try {
             $this->validate($request,[
-                'name' =>'required|max:255|unique:brands',
-                'des'  =>'max:255',
+                'name' =>'required|max:100|unique:brands'
             ]);
     
             Brand::create([
@@ -42,13 +41,13 @@ class BrandController extends Controller
 
     public function show(Brand $brand)
     {
-        return view('brand.view')->with('data',$brand);
+        return view('module.brand.view')->with('data',$brand);
     }
 
 
     public function edit(Brand $brand)
     {
-        return view('brand.edit')->with('data',$brand);
+        return view('module.brand.edit')->with('data',$brand);
     }
 
 
@@ -56,8 +55,7 @@ class BrandController extends Controller
     {
         try{
             $this->validate($request,[
-                'name'     =>'required|min:3|max:255|unique:brands,name,'.$brand->id,
-                'des'      =>'max:255',
+                'name'     =>'required|min:3|max:100|unique:brands,name,'.$brand->id
             ]);
 
             $brand->update([
